@@ -1,4 +1,16 @@
 # 2248321, Marcelo Coriat Hijar
+# 6226989, Alek Hanachian
+
+# Check pour voir si l'annee est bissextile
+def bissextile(annee:int):
+    if annee % 4 == 0:
+        if (annee % 100 == 0) and (annee % 400 != 0):
+            return False
+        if (annee % 400 == 0):
+            return True
+        return True
+
+# question 5.1
 
 # sous-programme / calculation du cout de l'ensemble d'achat des volailles
 def cout_volailles(poussins,dindonneau,poules_pondeuses):
@@ -8,6 +20,7 @@ poussins=45,2.25
 dindonneau=7,4.75
 poules_pondeuses=23,15
 print(cout_volailles(poussins,dindonneau,poules_pondeuses))
+
 
 # sous programme / calculation des taux de mortalite par espece volaille
 # suite a cette operation nous pouvons calculer respectivement les depenses des especes (espace m2,nourriture..etc)
@@ -52,3 +65,19 @@ def calcul_dindon():
     return cout
 
 print(calcul_dindon())
+
+# question 5.2
+
+# fonction pour calculer le nombre d'oeufs produits par poule sur une période donnée (2 ans)
+def oeufsProduits(anDebut:int, anFin:int):
+    # compteur pour le nombre de jours totaux entre les 2 années
+    jours:int = 0
+    for i in range(anDebut, anFin + 1):
+        # utilise la fct bissextile pour vérifier si l'année est bissextile
+        if bissextile(i) == True:
+            jours += 366
+        else: 
+            jours += 365
+    return jours
+
+
