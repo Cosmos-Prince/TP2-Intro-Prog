@@ -1,149 +1,64 @@
 # 2248321, Marcelo Coriat Hijar
-# 6226989, Alek Hanachian
 
-# fonction qui retourne True si l'annee est bissextile
-def bissextile(annee:int):
-    if annee % 4 == 0:
-        if (annee % 100 == 0) and (annee % 400 != 0):
-            return False
+execution=int(input("options de gestion automatisé d'élevage de volailles:"
+                    "\nInitier Un Calcul De Vos Investissements Initiaux Tapez '1' : "))
+
+if execution==1:
+    def dindon():
+        print("stocker les information pour les dindons de chair: ")
+        dindon=int(input("quantite achete: "))
+        prix_dindon=float(input("prix dun dindon $ : "))
+        cout_achat=(dindon*prix_dindon)
+
+        # cout depense rip
+        m2_dindon=float(input("l'espacement en metre carre d'un dindon: "))
+        prix_rip=float(input("le prix de la rip: (Nous utiliserons ce prix pour toutes les autres espèces) "))
+        abattage_dindon=int(input("a quelle semaine est prevue l'abatagge: "))
+        cout_rip=(m2_dindon*prix_rip*abattage_dindon*dindon)
+
+        # cout depense moulee
+        moulee_deb_dindon=float(input("prix de la moulee de debutant: (cette moulee est utilisee entre les semaines 0 a 4) "))
+        moulee_croi_dindon=float(input("prix de la moulee de croissance: (cette moulee est utilisee apartir de la semaine 5 "))
+        tm_dindon= float(input("quelle est le taux mortalite en %: "))
+        # semaine 0 a 4
+        semaine0a4=round((4*3*dindon)/25)
+        semaine0a4_quantite=(4*3*dindon)
+        while (semaine0a4*25)<(4*3*dindon):
+            semaine0a4 +=1
+        cout_moulee=(semaine0a4*moulee_deb_dindon)
+
+        # CONSOM CROISSANCE
+        # semaine 4 a 8
+        semaine4a8=round((4*5*dindon)/25)
+        semaine4a8_quantite=(4*5*dindon)
+        while (semaine4a8*25)<(semaine4a8_quantite):
+            semaine4a8 +=1
         else:
-            return True
-    else:
-        return False
-
-# fonction pour calculer le prix total selon la qte et le prix de chaque volaille
-def prixAchat(qtePoulet:int, qteDinde:int, qtePoule:int):
-    prixFinal:float = round(((qtePoulet * 2.25) + (qteDinde * 4.75) + (qtePoule * 15)), 2)
-    return prixFinal
-
-
-# fonction qui calcule le taux de mortalite de chaque animal
-def tauxMortalite(type:str, qteInitiale:int):
-    qteRestante:int = 0
-    # verifie selon le type de chaque espece de volaille, arrondis a la position des entiers 
-    if type == "poule":
-        qteRestante = round(qteInitiale * 0.99)
-    elif type == "poulet":
-        qteRestante = round(qteInitiale * 0.95)
-    elif type == "dindon":
-        qteRestante = round(qteInitiale * 0.92)
-    return qteRestante
-
-
-# fonction pour definir quel type et prix selon le type et l'age de volaille
-def prixMoulee(type:str, age:int):
-    prix:int = 0
-    qte:int = 0
-    # check le type d'animal en premier et ensuite le prix pour l'age
-    if type == "poulet":
-        if age <= 4:
-            prix = 20
-            qte = 2
-        # pas besoin de faire entre 4 et 8 puisque le code va aller de haut en bas et donc tomber dans la prochaine section lorsque necessaire
-        # pas de difference de prix ni de qte entre 4 a 8 semaines et 8 a 10
-        elif age <= 10:
-            prix = 21
-            qte = 4
-
-    elif type == "dindon":
-        if age <= 4:
-            prix = 22
-            qte = 3
-        # qte et prix est la meme entre 4 a 8 et 8 a 10 semaines
-        elif age <= 10:
-            prix = 23
-            qte = 5
-        elif age <= 14:
-            prix = 23
-            qte = 11
-
-    elif type == "poule":
-        prix = ?????????????????
-        qte = 6
-
-    prixqte:list = [prix, qte]
-    return prixqte
+            restant=(semaine4a8*25)-(semaine4a8_quantite)
+        cout_moulee=cout_moulee+(semaine4a8*moulee_croi_dindon)
+        # semaine 8 a 10
+        semaine8a10=round((2*5*dindon)/25)
+        semaine8a10_quantite=(2*5*dindon)
+        if restant > 0:
+            semaine8a10_quantite - restant
+        while (semaine8a10*25)<(semaine8a10_quantite):
+           if restant>0:
+               semaine8a10_quantite-restant
+           else:
+               semaine4a8 +=1
+        cout_moulee=cout_moulee+(semaine8a10*moulee_croi_dindon)
+        # semaine 10 a 19
+        semaine10a19 = round((9 * 11 * dindon) / 25)
+        semaine10a19_quantite = (9 * 11 * dindon)
+        if restant > 0:
+            semaine10a19_quantite - restant
+        while (semaine10a19 * 25) < (9 * 11 * dindon):
+             semaine10a19 += 1
+        cout_moulee=cout_moulee+(semaine10a19*moulee_croi_dindon)
+        total_dindon=cout_moulee+cout_achat+cout_rip
+        total_dindon=total_dindon*(1-(tm_dindon/100))
+        return total_dindon
+    print("le prix",dindon())
 
 
-# fonction pour determiner la qte de sacs de litiere a acheter en fonction du nombre de semaines que l'animal vivera et quel animal
-def qteLitiere(semaines:int, type:str):
-    qteSacs:float = 0
-    if type == "poule":
-        # qte de sacs va etre multiplie par le nbre d'animaux hors de la fct et sera arrondi a la hausse apres
-        qteSacs = semaines / 3
-    elif type == "poulet": 
-        qteSacs = semaines * 1.25
-    elif type == "dindon":
-        qteSacs = semaines * 3
-    return qteSacs
-
-
-# fonction pour calculer la qte de poulets abbatues pour semaines 4/8/10
-def abattagePoulet(qte:int, age:int, qtePoules:int):
-    qteAbattus:int = 0
-    if age == 4:
-        qteAbattus = round(qte / 3)
-    if age == 8:
-        qteAbattus = round(qtePoules / 2)
-    if age == 10:
-        qteAbattus = qte
-    return qteAbattus
-
-
-# fonction pour arrondir a la hausse si la valeur n'est pas egale a un total
-def arrondirUP(unite:int, variableCheck:float):
-    if variableCheck % unite == 0:
-        return variableCheck
-    else:
-        # calcules la difference manquante entre la variableCheck et l'unite, la retourne pour arriver au multiple commun le plus pres vers le haut
-        reste:int = variableCheck % unite
-        reste = abs(unite - reste)
-        return (round(variableCheck + reste))
-
-
-# fonction calculant les frais initaux
-def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
-    grandTotal:int = 0
-    
-    # ajout du cout inital des volailles
-    grandTotal += prixAchat(qtePoulets, qteDindons, qtePoules)
-    
-    # creation de variables qui seront utilisees dans les calculs
-    # litierePoule doit etre arrondi a la hausse a la fin de la boucle
-    litierePoule:float = 0
-    litierePoulet:float = 0
-    # les variables mouleeType seront utilise pour calculer la qte de moulee a acheter, arrondis a la hausse au sac de 25 kg 
-    mouleePoulet1:int = 0
-    mouleePoulet2:int = 0
-    mouleePoule:int = 0
-    mouleeDindon1:int = 0
-    mouleeDindon2:int = 0
-
-    # calcule selon les semaines, s'arrette a la semaine 19 puisque toutes les vollailles seront abbatues a celle-ci (sauf bien sur les poules pondeuses)
-    for i in range(1, 20):
-        qtePoulets -= abattagePoulet(qtePoulets, i, qtePoules)
-        # Calcule la qte de sacs de litieres necessaire, le total d'$ sera compte a la fin
-        litierePoulet += qteLitiere(i, "poulet") * qtePoulets
-        litierePoule += qteLitiere(i, "poule") * qtePoules
-        grandTotal += (qteLitiere(i, "dindon") * qteDindons) * 9
-        
-        # calcul de la moulee pour chaque volaille par semaine de croissance
-        # doit etre separe en 2 valeurs pour la difference de prix entre les 2 nourritures de chaque volaille
-        # ******************************************************** manque la moulee de poule ******************************  
-        if i <= 4:
-            mouleePoulet1 += (prixMoulee("poulet", i)[1] * qtePoulets)
-            mouleeDindon1 += (prixMoulee("dindon", i)[1] * qteDindons)
-        else:
-            mouleeDindon2 += (prixMoulee("dindon", i)[1] * qteDindons)
-            mouleePoulet2 += (prixMoulee("poulet", i)[1] * qtePoulets)
-            
-    # arrondissement a la hausse pour acheter des sacs complets. 
-    grandTotal += (arrondirUP(25, mouleePoulet1) * prixMoulee("poulet", 1)[0])
-    grandTotal += (arrondirUP(25, mouleePoulet2) * prixMoulee("poulet", 5)[0])
-    grandTotal += (arrondirUP(25, mouleeDindon1) * prixMoulee("dindon", 1)[0])
-    grandTotal += (arrondirUP(25, mouleeDindon2) * prixMoulee("dindon", 5)[0])
-    grandTotal += (arrondirUP(1, litierePoule) * 9)
-    grandTotal += (arrondirUP(1, litierePoulet) * 9)
-
-    
 
