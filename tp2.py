@@ -58,7 +58,7 @@ def prixMoulee(type:str, age:int):
             qte = 11
 
     elif type == "poule":
-        prix = ?????????????????
+        prix = 21
         qte = 6
 
     prixqte:list = [prix, qte]
