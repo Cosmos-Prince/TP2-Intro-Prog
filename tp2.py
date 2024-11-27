@@ -33,34 +33,40 @@ def tauxMortalite(type:str, qteInitiale:int):
 # fonction pour definir quel type et prix selon le type et l'age de volaille
 def prixMoulee(type:str, age:int):
     prix:int = 0
-    qte:int = 0
+    qte:float = 0
     # check le type d'animal en premier et ensuite le prix pour l'age
+    # la qte indiquee dans le tableau et pour la periode donnee, d'ou les divisions dans la qte
     if type == "poulet":
         if age <= 4:
             prix = 20
-            qte = 2
+            qte = 2/5
         # pas besoin de faire entre 4 et 8 puisque le code va aller de haut en bas et donc tomber dans la prochaine section lorsque necessaire
-        # pas de difference de prix ni de qte entre 4 a 8 semaines et 8 a 10
+        elif age <= 8:
+            prix = 21
+            qte = 4/4
         elif age <= 10:
             prix = 21
-            qte = 4
+            qte = 4/2
 
     elif type == "dindon":
         if age <= 4:
             prix = 22
-            qte = 3
-        # qte et prix est la meme entre 4 a 8 et 8 a 10 semaines
+            qte = 3/5
+        elif age <= 8:
+            prix = 23
+            qte = 5/4
         elif age <= 10:
             prix = 23
-            qte = 5
+            qte = 5/2
         elif age <= 14:
             prix = 23
-            qte = 11
+            qte = 11/3
 
     elif type == "poule":
         prix = 21
-        qte = 6
+        qte = 6/3
 
+    # cree une liste contenant le prix et la qte de nourriture consomme par la volaille. 
     prixqte:list = [prix, qte]
     return prixqte
 
@@ -103,7 +109,7 @@ def arrondirUP(unite:int, variableCheck:float):
 
 # fonction calculant les frais initaux
 def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
-    grandTotal:int = 0
+    grandTotal:float = 0
     
     # ajout du cout inital des volailles
     grandTotal += prixAchat(qtePoulets, qteDindons, qtePoules)
@@ -113,11 +119,11 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
     litierePoule:float = 0
     litierePoulet:float = 0
     # les variables mouleeType seront utilise pour calculer la qte de moulee a acheter, arrondis a la hausse au sac de 25 kg 
-    mouleePoulet1:int = 0
-    mouleePoulet2:int = 0
-    mouleePoule:int = 0
-    mouleeDindon1:int = 0
-    mouleeDindon2:int = 0
+    mouleePoulet1:float = 0
+    mouleePoulet2:float = 0
+    mouleePoule:float = 0
+    mouleeDindon1:float = 0
+    mouleeDindon2:float = 0
 
     # calcule selon les semaines, s'arrette a la semaine 19 puisque toutes les vollailles seront abbatues a celle-ci (sauf bien sur les poules pondeuses)
     for i in range(1, 20):
@@ -129,21 +135,99 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
         
         # calcul de la moulee pour chaque volaille par semaine de croissance
         # doit etre separe en 2 valeurs pour la difference de prix entre les 2 nourritures de chaque volaille
-        # ******************************************************** manque la moulee de poule ******************************  
         if i <= 4:
             mouleePoulet1 += (prixMoulee("poulet", i)[1] * qtePoulets)
             mouleeDindon1 += (prixMoulee("dindon", i)[1] * qteDindons)
         else:
             mouleeDindon2 += (prixMoulee("dindon", i)[1] * qteDindons)
             mouleePoulet2 += (prixMoulee("poulet", i)[1] * qtePoulets)
-            
+        # age de la poule n'est pas important pour la qte de moulee qu'elle consomme, mis a 19 puisqu'on les recoit a 19 semaines
+        mouleePoule += (prixMoulee("poule", 19)[1] * qtePoules)
+    
+    # calculs pour le restant de l'annee, comprennant seulement les poules qui vont vivre 2 ans
+    for i in range(20, 53):
+        litierePoule += qteLitiere(i, "poule") * qtePoules
+        mouleePoule += (prixMoulee("poule", 19)[1] * qtePoules)
+        
+        
     # arrondissement a la hausse pour acheter des sacs complets. 
     grandTotal += (arrondirUP(25, mouleePoulet1) * prixMoulee("poulet", 1)[0])
     grandTotal += (arrondirUP(25, mouleePoulet2) * prixMoulee("poulet", 5)[0])
     grandTotal += (arrondirUP(25, mouleeDindon1) * prixMoulee("dindon", 1)[0])
     grandTotal += (arrondirUP(25, mouleeDindon2) * prixMoulee("dindon", 5)[0])
+    grandTotal += (arrondirUP(25, mouleePoule) * prixMoulee("poule", 19)[0])
     grandTotal += (arrondirUP(1, litierePoule) * 9)
     grandTotal += (arrondirUP(1, litierePoulet) * 9)
+    
+    return grandTotal
+
+
+# fonction pour calculer la qte d'oeufs sur 2 ans
+def prodOeufs(qtePoules:int, anDepart:int):
+    totalOeufs:int = 0
+    # calcule pour la premiere annee utilisant la fct bissextile et tauxMortalite pour deteminer la qte d'oeufs
+    # il a ete determine que le taux de mortalite arrivait a la fin de la periode donnee, donc a la fin de l'annee pour les poules
+    if bissextile(anDepart) == True:
+        totalOeufs = qtePoules * 366
+    else:
+        totalOeufs = qtePoules * 365
+    
+    # check pour la 2e annee, incluant le taux de mortalite de la 1ere annee
+    if bissextile(anDepart + 1) == True:
+        totalOeufs += tauxMortalite("poule", qtePoules) * 366
+    else:
+        totalOeufs += tauxMortalite("poule", qtePoules) * 365
+    
+    return totalOeufs
+
+
+
+# fonction pour calculer la vente d'oeufs
+def venteOeufs(qtePoules:int, net:bool, periodeTemps:str):
+    revenus:float = 0
+    # qte d'oeufs vendus
+    qteVendus:int = 0
+    # permets de calculer seulement les frais relies aux poules
+    frais:float = fraisInitiaux(qtePoules, 0, 0)
+    
+    # calculs si on veut le revenu net
+    if net == True:
+        if periodeTemps == "semaine":
+            # calcul est qtePoules * duree(en jours) * %vendu * prix
+            qteVendus = qtePoules * 7 * 0.8
+            revenus = arrondirUP(12, qteVendus) * 3.75 - (frais / 52)
+        elif periodeTemps == "mois":
+            # arrondi a 30 jours puisqu'on ne demande pas quel mois, pourrais etre amélioré
+            qteVendus = qtePoules * 30 * 0.8
+            revenus = arrondirUP(12, qteVendus) * 3.75 - (frais / 12)
+        elif periodeTemps == "annee":
+            # pas demande de check pour annee bissextile, pourrait etre implemente
+            qteVendus = qtePoules * 365 * 0.8
+            revenus = arrondirUP(12, qteVendus) * 3.75 - (frais)
+
+    # calculs si on veut le revenu brut
+    else:
+        if periodeTemps == "semaine":
+            # calcul est qtePoules * duree(en jours) * %vendu * prix
+            qteVendus = qtePoules * 7 * 0.8
+            revenus = arrondirUP(12, qteVendus) * 3.75
+        elif periodeTemps == "mois":
+            # arrondi a 30 jours puisqu'on ne demande pas quel mois, pourrais etre amélioré
+            qteVendus = qtePoules * 30 * 0.8
+            revenus = arrondirUP(12, qteVendus) * 3.75
+        elif periodeTemps == "annee":
+            # pas demande de check pour annee bissextile, pourrait etre implemente
+            qteVendus = qtePoules * 365 * 0.8
+            revenus = arrondirUP(12, qteVendus) * 3.75
+
+    return revenus
+ 
+
+
+    
+    
+    
+    
 
     
 
