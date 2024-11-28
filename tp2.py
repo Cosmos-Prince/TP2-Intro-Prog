@@ -58,7 +58,7 @@ def prixMoulee(type:str, age:int):
         elif age <= 10:
             prix = 23
             qte = 5/2
-        elif age <= 14:
+        elif age <= 19:
             prix = 23
             qte = 11/3
 
@@ -78,7 +78,10 @@ def qteLitiere(semaines:int, type:str):
         # qte de sacs va etre multiplie par le nbre d'animaux hors de la fct et sera arrondi a la hausse apres
         qteSacs = semaines / 3
     elif type == "poulet": 
-        qteSacs = semaines * 1.25
+        if semaines < 10:
+            return
+        else:
+            qteSacs = semaines * 1.25
     elif type == "dindon":
         qteSacs = semaines * 3
     return qteSacs
@@ -223,7 +226,9 @@ def venteOeufs(qtePoules:int, net:bool, periodeTemps:str):
     return revenus
  
 
-
+        
+        
+        
     
     
     
