@@ -72,18 +72,15 @@ def prixMoulee(type:str, age:int):
 
 
 # fonction pour determiner la qte de sacs de litiere a acheter en fonction du nombre de semaines que l'animal vivera et quel animal
-def qteLitiere(semaines:int, type:str):
+def qteLitiere(type:str):
     qteSacs:float = 0
     if type == "poule":
         # qte de sacs va etre multiplie par le nbre d'animaux hors de la fct et sera arrondi a la hausse apres
-        qteSacs = semaines / 3
+        qteSacs = 1 / 3
     elif type == "poulet": 
-        if semaines < 10:
-            return
-        else:
-            qteSacs = semaines * 1.25
+        qteSacs = 1.25
     elif type == "dindon":
-        qteSacs = semaines * 3
+        qteSacs =  3
     return qteSacs
 
 
@@ -132,9 +129,9 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
     for i in range(1, 20):
         qtePoulets -= abattagePoulet(qtePoulets, i, qtePoules)
         # Calcule la qte de sacs de litieres necessaire, le total d'$ sera compte a la fin
-        litierePoulet += qteLitiere(i, "poulet") * qtePoulets
-        litierePoule += qteLitiere(i, "poule") * qtePoules
-        grandTotal += (qteLitiere(i, "dindon") * qteDindons) * 9
+        litierePoulet += qteLitiere("poulet") * qtePoulets
+        litierePoule += qteLitiere("poule") * qtePoules
+        grandTotal += (qteLitiere("dindon") * qteDindons) * 9
         
         # calcul de la moulee pour chaque volaille par semaine de croissance
         # doit etre separe en 2 valeurs pour la difference de prix entre les 2 nourritures de chaque volaille
