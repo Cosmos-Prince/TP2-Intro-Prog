@@ -85,12 +85,12 @@ def qteLitiere(type:str):
 
 
 # fonction pour calculer la qte de poulets abbatues pour semaines 4/8/10
-def abattagePoulet(qte:int, age:int, qtePoules:int):
+def abattagePoulet(qte:int, age:int):
     qteAbattus:int = 0
     if age == 4:
-        qteAbattus = round(qte / 3)
+        qteAbattus = round((2 * qte) / 3)
     if age == 8:
-        qteAbattus = round(qtePoules / 2)
+        qteAbattus = round(qte / 2)
     if age == 10:
         qteAbattus = qte
     return qteAbattus
@@ -127,7 +127,7 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
 
     # calcule selon les semaines, s'arrette a la semaine 19 puisque toutes les vollailles seront abbatues a celle-ci (sauf bien sur les poules pondeuses)
     for i in range(1, 20):
-        qtePoulets -= abattagePoulet(qtePoulets, i, qtePoules)
+        qtePoulets -= abattagePoulet(qtePoulets, i)
         # Calcule la qte de sacs de litieres necessaire, le total d'$ sera compte a la fin
         litierePoulet += qteLitiere("poulet") * qtePoulets
         litierePoule += qteLitiere("poule") * qtePoules
@@ -146,7 +146,7 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
     
     # calculs pour le restant de l'annee, comprennant seulement les poules qui vont vivre 2 ans
     for i in range(20, 53):
-        litierePoule += qteLitiere(i, "poule") * qtePoules
+        litierePoule += qteLitiere("poule") * qtePoules
         mouleePoule += (prixMoulee("poule", 19)[1] * qtePoules)
         
         
@@ -223,6 +223,7 @@ def venteOeufs(qtePoules:int, net:bool, periodeTemps:str):
     return revenus
  
 
+print(fraisInitiaux(23, 45, 7))
         
         
         
