@@ -60,11 +60,11 @@ def prixMoulee(type:str, age:int):
             qte = 5/2
         elif age <= 19:
             prix = 23
-            qte = 11/3
+            qte = 11/4
 
     elif type == "poule":
         prix = 21
-        qte = 6/3
+        qte = 6/4
 
     # cree une liste contenant le prix et la qte de nourriture consomme par la volaille. 
     prixqte:list = [prix, qte]
@@ -85,15 +85,18 @@ def qteLitiere(type:str):
 
 
 # fonction pour calculer la qte de poulets abbatues pour semaines 4/8/10
+# abbatus a la fin de la semaine aka au tt les dépenses de la semaines sont presents
 def abattagePoulet(qte:int, age:int):
-    qteAbattus:int = 0
-    if age == 4:
-        qteAbattus = round((2 * qte) / 3)
-    if age == 8:
-        qteAbattus = round(qte / 2)
-    if age == 10:
-        qteAbattus = qte
-    return qteAbattus
+    qteRestants:int = 0
+    if age == 5:
+        qteRestants = round((2 * qte) / 3)
+    elif age == 9:
+        qteRestants = round(qte / 2)
+    elif age == 11:
+        qteRestants = 0
+    else:
+        qteRestants = qte
+    return qteRestants
 
 
 # fonction pour arrondir a la hausse si la valeur n'est pas egale a un total
@@ -126,8 +129,8 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
     mouleeDindon2:float = 0
 
     # calcule selon les semaines, s'arrette a la semaine 19 puisque toutes les vollailles seront abbatues a celle-ci (sauf bien sur les poules pondeuses)
-    for i in range(1, 20):
-        qtePoulets -= abattagePoulet(qtePoulets, i)
+    for i in range(0, 19):
+        qtePoulets = abattagePoulet(qtePoulets, i)
         # Calcule la qte de sacs de litieres necessaire, le total d'$ sera compte a la fin
         litierePoulet += qteLitiere("poulet") * qtePoulets
         litierePoule += qteLitiere("poule") * qtePoules
@@ -145,20 +148,20 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
         mouleePoule += (prixMoulee("poule", 19)[1] * qtePoules)
     
     # calculs pour le restant de l'annee, comprennant seulement les poules qui vont vivre 2 ans
-    for i in range(20, 53):
+    for i in range(19, 52):
         litierePoule += qteLitiere("poule") * qtePoules
         mouleePoule += (prixMoulee("poule", 19)[1] * qtePoules)
         
         
     # arrondissement a la hausse pour acheter des sacs complets. 
-    grandTotal += (arrondirUP(25, mouleePoulet1) * prixMoulee("poulet", 1)[0])
-    grandTotal += (arrondirUP(25, mouleePoulet2) * prixMoulee("poulet", 5)[0])
-    grandTotal += (arrondirUP(25, mouleeDindon1) * prixMoulee("dindon", 1)[0])
-    grandTotal += (arrondirUP(25, mouleeDindon2) * prixMoulee("dindon", 5)[0])
-    grandTotal += (arrondirUP(25, mouleePoule) * prixMoulee("poule", 19)[0])
+    grandTotal += (arrondirUP(25, mouleePoulet1) / 25 * prixMoulee("poulet", 1)[0])
+    grandTotal += (arrondirUP(25, mouleePoulet2) / 25 * prixMoulee("poulet", 5)[0])
+    grandTotal += (arrondirUP(25, mouleeDindon1) / 25 * prixMoulee("dindon", 1)[0])
+    grandTotal += (arrondirUP(25, mouleeDindon2) / 25 * prixMoulee("dindon", 5)[0])
+    grandTotal += (arrondirUP(25, mouleePoule) / 25 * prixMoulee("poule", 19)[0])
     grandTotal += (arrondirUP(1, litierePoule) * 9)
     grandTotal += (arrondirUP(1, litierePoulet) * 9)
-    
+
     return grandTotal
 
 
@@ -222,8 +225,8 @@ def venteOeufs(qtePoules:int, net:bool, periodeTemps:str):
 
     return revenus
  
-
-print(fraisInitiaux(23, 45, 7))
+   
+print(fraisInitiaux(0, 0, 7), "dindons")
         
         
         
