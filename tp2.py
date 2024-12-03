@@ -1,22 +1,10 @@
 # 2248321, Marcelo Coriat Hijar
 # 6226989, Alek Hanachian
 
-# fonction qui retourne True si l'annee est bissextile
-def bissextile(annee:int):
-    if annee % 4 == 0:
-        if (annee % 100 == 0) and (annee % 400 != 0):
-            return False
-        else:
-            return True
-    else:
-        return False
-
 # fonction pour calculer le prix total selon la qte et le prix de chaque volaille
 def prixAchat(qtePoulet:int, qteDinde:int, qtePoule:int):
     prixFinal:float = round(((qtePoulet * 2.25) + (qteDinde * 4.75) + (qtePoule * 15)), 2)
     return prixFinal
-
-
 # fonction qui calcule le taux de mortalite de chaque animal
 def tauxMortalite(type:str, qteInitiale:int):
     qteRestante:int = 0
@@ -28,8 +16,6 @@ def tauxMortalite(type:str, qteInitiale:int):
     elif type == "dindon":
         qteRestante = round(qteInitiale * 0.92)
     return qteRestante
-
-
 # fonction pour definir quel type et prix selon le type et l'age de volaille
 def prixMoulee(type:str, age:int):
     prix:int = 0
@@ -69,8 +55,6 @@ def prixMoulee(type:str, age:int):
     # cree une liste contenant le prix et la qte de nourriture consomme par la volaille. 
     prixqte:list = [prix, qte]
     return prixqte
-
-
 # fonction pour determiner la qte de sacs de litiere a acheter en fonction du nombre de semaines que l'animal vivera et quel animal
 def qteLitiere(type:str):
     qteSacs:float = 0
@@ -82,8 +66,6 @@ def qteLitiere(type:str):
     elif type == "dindon":
         qteSacs =  3
     return qteSacs
-
-
 # fonction pour calculer la qte de poulets abbatues pour semaines 4/8/10
 # abbatus a la fin de la semaine aka au tt les dépenses de la semaines sont presents
 def abattagePoulet(qte:int, age:int):
@@ -97,8 +79,6 @@ def abattagePoulet(qte:int, age:int):
     else:
         qteRestants = qte
     return qteRestants
-
-
 # fonction pour arrondir a la hausse si la valeur n'est pas egale a un total
 def arrondirUP(unite:int, variableCheck:float):
     if variableCheck % unite == 0:
@@ -108,8 +88,6 @@ def arrondirUP(unite:int, variableCheck:float):
         reste:int = variableCheck % unite
         reste = abs(unite - reste)
         return (round(variableCheck + reste))
-
-
 # fonction calculant les frais initaux
 def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
     grandTotal:float = 0
@@ -165,6 +143,18 @@ def fraisInitiaux(qtePoules:int, qtePoulets:int, qteDindons:int):
     return grandTotal
 
 
+
+# fonction qui retourne True si l'annee est bissextile
+def bissextile(annee: int):
+    if annee % 4 == 0:
+        if (annee % 100 == 0) and (annee % 400 != 0):
+            return False
+        else:
+            return True
+    else:
+        return False
+
+
 # fonction pour calculer la qte d'oeufs sur 2 ans
 def prodOeufs(qtePoules:int, anDepart:int):
     totalOeufs:int = 0
@@ -174,15 +164,14 @@ def prodOeufs(qtePoules:int, anDepart:int):
         totalOeufs = qtePoules * 366
     else:
         totalOeufs = qtePoules * 365
-    
+
     # check pour la 2e annee, incluant le taux de mortalite de la 1ere annee
     if bissextile(anDepart + 1) == True:
         totalOeufs += tauxMortalite("poule", qtePoules) * 366
     else:
         totalOeufs += tauxMortalite("poule", qtePoules) * 365
-    
-    return totalOeufs
 
+    return totalOeufs
 
 
 # fonction pour calculer la vente d'oeufs
@@ -224,13 +213,69 @@ def venteOeufs(qtePoules:int, net:bool, periodeTemps:str):
             revenus = arrondirUP(12, qteVendus) * 3.75
 
     return revenus
- 
-   
-print(fraisInitiaux(0, 0, 7), "dindons")
-        
-        
-        
-    
+
+
+# Calcul pour obtenir le dernier jour delevegae des Poulets et les Dindons
+def derniereJournee(derniereSemainePoulets,derniereSemaineDindons):
+    #Importation du module datetime pour faciliter la tache puisque nous avons deja lachat initiale des vollailles
+    from datetime import datetime
+    from datetime import timedelta
+    dateDepart = datetime(2024,5,27)
+    #Conversion de semaines en jours (7 jours/semaine)
+    enJoursPoulets = derniereSemainePoulets*7
+    dateFinPoulet = dateDepart + timedelta(days=enJoursPoulets)
+    # cree un objet represente en Jours + dateDepart pour avoir la date en format y/m/d
+
+    enJoursDindons = derniereSemaineDindons*7
+    dateFinDindons = dateDepart + timedelta(days=enJoursDindons)
+    return (dateFinDindons.strftime('%B %d, %Y'), dateFinPoulet.strftime('%B %d, %Y'))
+    # %B donne le nom du mois, %d le jour, %Y l'an format XXXX
+
+
+# Menu textuel pour montrer les calculs
+execution=int(input("Programme de calculations pour aviculteurs\n"
+      "Voici les calculs suivants dans l’ordre, pour commencer, veuillez taper '1'\n"
+      "________________________________________________________________\n"
+      "1- Calcul de frais initiales d'investissemet pour une Période de un an\n"
+      "2- Calcul de la quantité d’œufs produite pour une période de deux ans\n"
+      "3- Calcul de dernière journée d’élevage de Dindons et Poulets de chair\n"
+      "Votre choix: "))
+# POUR 5.1
+match execution:
+    case 1:
+        qtePoules=int(input("\nVous avez choisi l'option 1"
+                            "\nInvitez une réponse aux questions suivantes"
+                            "\nQuantite de Poules: "))
+        qtePoulets=int(input("Quantite de Poulets: "))
+        qteDindons=int(input("Quantite de Dindons: "))
+        print(fraisInitiaux(qtePoules, qtePoulets, qteDindons),"sera le coût d’investissement initial")
+# POUR 5.2, 5.3.1 ET 5.3.2
+    case 2:
+        qtePoules = int(input("\nVous avez choisi l'option 2"
+                              "\nInvitez une réponse aux questions suivantes"
+                              "\nQuantite de Poules: "))
+        anDepart = int(input("Quelle est l'an de depart: "))
+        print(f"Vous produirez {prodOeufs(qtePoules, anDepart)} au cours des années {anDepart} et {anDepart + 1}")
+        choix:int = int(input("Pour voir les revenus nets ou bruts au cours de la première année, entrez 1 pour brut et 2 pour net : "))
+        if choix == 1:
+            print(f"Vous générerez un revenu brut de \n{venteOeufs(qtePoules, False, "semaines")}$ par semaine, 
+            \n{venteOeufs(qtePoules, False, "mois")}$ par mois et
+            \n{venteOeufs(qtePoules, False, "annee")}$ par année.")
+        elif choix == 2:
+            print(f"Vous générerez un revenu net de \n{venteOeufs(qtePoules, True, "semaines")}$ par semaine, 
+            \n{venteOeufs(qtePoules, True, "mois")}$ par mois et
+            \n{venteOeufs(qtePoules, True, "annee")}$ par année.")
+            
+# POUR 5.4 ET 5.5
+    case 3:
+        print("\nVous avez choisi l'option 3"
+              "\nInvitez une réponse aux questions suivantes")
+        derniereSemainePoulets = int(input("Quelle est la derniere semaine prevue pour les Poulets: "))
+        derniereSemaineDindons = int(input("Quelle est la derniere semaine prevue pour les Poulets: "))
+        dindons, poulets = derniereJournee(derniereSemainePoulets, derniereSemaineDindons)
+        print(f"\nDate de fin des Dindons: {dindons}")
+        print(f"Date de fin des Poulets: {poulets}")
+
     
     
     
